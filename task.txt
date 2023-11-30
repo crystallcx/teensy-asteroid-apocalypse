@@ -1,0 +1,99 @@
+- Deflector Shield: There is a barrier across the screen in row 39. The barrier is depicted by a 1 pixel high dotted line.
+- Starfighter: 
+    - There is a spaceship object.
+    - The Starfighter is at least 4 pixels and no more than 7 pixels in height.
+    - The Starfighter is at least 5 pixels and no more than 15 pixels in width.
+    - The Starfighter has a turret from which the linear wave-guide the Plasma Cannon extends. This will look like a short straight line and is included in the 7 pixel height limit. All further mentions of Starfighter include the turret.
+    - When the game starts or resets, the Starfighter is horizontally centred in the bottom 8 rows (i.e. rows 40 - 47) of the screen, or as close to the centre as possible given the geometry of your design.
+    - When the game game starts or resets, the Starfighter is stationary.
+    - No part of the Starfighter may ever leave the screen or overlap the Deflector Shield.
+    - The Starfighter may never move vertically.
+
+- Falling objects: 
+    - There are three types of falling object: Asteroids, Boulders, and Fragments.
+    - Asteroids fall from the top of the screen, two seconds after the game is started or restarted, and pose a danger to the Starfighter.
+    - Initially, three Asteroids spawn at random horizontal positions above the top of the screen, and move smoothly into view one row of pixels at a time (i.e: they do not simply appear).
+    - Asteroids may not go outside the left, right and bottom edges of the screen (but may be seen to come in from the top of the screen).
+    - Asteroids fall downwards only.
+    - If a falling object touches the Deflector Shield, the object disappears and the remaining useful life of the Deflector Shield decreases.
+    - When hit by a Plasma Bolt (see below) Asteroids split to form two Boulders, and Boulders split to form two Fragments. Fragments just disappear when hit by a Plasma Bolt.
+    - Once all Asteroids, Boulders, and Fragments have disappeared, a new wave of three Asteroids will respawn above the top of the display and scroll smoothly into view.
+    - When an object splits, each of the two resulting objects acquires a new velocity which must be within += 30 degrees of the heading of the object that has been destroyed. It is acceptable for the two spawned child objects to fall straight down if you wish, however it must be possible to visibly tell that they are two distinct objects.
+    - When a falling object is hit by a Plasma Bolt, the player's score increases.
+    - Falling object sizes are as follows:
+       -  Asteroid: are 7 by 7 pixels, shaped like diamonds, and give 1 point when shot.
+       - Boulder: are 5 by 5 pixels, shaped like diamonds, and give 2 points when shot.
+        - Fragment: are 3 by 3 pixels, shaped like plus symbols, and give 4 points when shot.
+- Game Status Information: the game status is displayed in a clear and legible format and contains the following
+    - On teensy screen
+        - Game time
+        - Remaining Useful Life
+        - Score
+    - Sent to computer
+        - Game time
+        - Lives
+        - Score
+        - Number of asteroids on screen
+        - Number of boulders on screen
+        - Number of fragments on screen
+        - Plasma bolts on screen
+        - Aim of turret
+        - Speed of game
+- Game Status control: the game status is controlled by pressing Joystick Down or 's' and causes game status information to be displayed the teensy screen or simply sent to the computer. If the game is not paused the game status information will be sent to the computer only. However, if the game is paused the 'On teensy screen' information specified above will be displayed on the screen along with the sending the status to the computer.
+- Collision Detection: may be bounding box or pixel level. However more marks will be awarded for pixel level collision detection.
+- Starfighter Movement: The Starfighter is controllable from the Teensy PewPew and a keyboard.
+    - At the beginning of the game, the Starfighter is randomly assigned a velocity, by default, that is speed 1 in either the left or right direction.
+    - From a stationary position, pressing Joystick Left or 'a' causes the Starfighter's velocity to increase in the left direction.
+    - From a stationary position, pressing Joystick Right or 'd' causes the Starfighter's velocity to increase in the right direction.
+    - From a left velocity, pressing Joystick Left or 'a' again, results in no change.
+    - From a left velocity, pressing Joystick Right or 'd', causes the Starfighter's velocity to change to 0, stopping the Starfighter's movement.
+    - From a right velocity, pressing Joystick Right or 'd' again, results in no change.
+    - From a right velocity, pressing Joystick Left or 'a', causes the Starfighter's velocity to change to 0, stopping the Starfighter's movement.
+    - When the Starfighter hits either side of the screen, it stops moving. automatically bounces, reversing it's direction.
+- Plasma Cannon Aiming Direction: is controlled by the Left Potentiometer or 'o' followed by a numeric value between 0 and 1023 inclusive.
+    - In the Plasma Cannon coordinate system, 0 degrees is taken to be straight up. The Plasma Cannon is restricted to aim between 60 degrees left of centre (-60) and 60 degrees right of centre (+60).
+    - Setting the left potentiometer to its physical minimum position corresponds to -60. Setting it to its maximum position corresponds to +60.
+    - The Plasma Cannon should visibly move to reflect the current angle as accurately as possible.
+    - Whenever an 'o' command is received, the numeric value supplied overrides the potentiometer value for one second or until a new 'o' command is received. The state of the Plasma Cannon visibly reflects this.
+- Firing Plasma Bolts: is controlled by pressing Joystick Up or 'w'.
+    - Plasma bolts are fired if either the Joystick Up is pressed or 'w' is received via USB serial, but only if at least 0.2 seconds has elapsed since the last Plasma Bolt was fired.
+    - Plasma bolts travel in the direction at which the Plasma Cannon was aimed when they were launched, moving with constant velocity.
+    - Plasma bolts disappear when they hit a falling object, or when they reach the edge of the screen.
+    - The maximum number of plasma bolts on screen at any given time is a fixed quantity (which you must choose), at least 20, and at most 100.
+    - If Joystick Up or 'w' is pressed and the maximum number of plasma bolts is already present on screen, nothing happens.
+- Introduction: an introductory display appears on the Teensy when the game is initially loaded. The introduction can be exited/skipped by pressing Left Button or 'r'. The introduction should include:
+    - Student number
+    - Game title
+    - Some kind of animation
+    - Use of PWM to adjust the brightness of the back-light (either on or off is up to you).
+- Game initial set-up: the following occurs at the start of the game by default. Some items may change depending on cheats entered on the keyboard.
+    - The Starfighter and Deflector Shield are visible on screen.
+    - The Remaining Useful Life of the Deflector Shield is 5.
+    - The score is 0.
+    - No Asteroids appear on screen.
+    - There are no Plasma Bolts on screen.
+    - Game time is set to 00:00.
+    - The game is paused.
+- Game time and Game start: the game time is derived from one of the Teensy's on-board timers and is incremented at approximately 1 second intervals. The game time starts when the user releases the program from pause mode. At that time, status information is sent to the computer along with a "game started" message.
+- Game pause: the game is paused by pressing Joystick Center or 'p'. When the game is paused the game time stops incrementing. To resume, Joystick Center or 'p' is pressed again.
+- Warning lights: one of the LEDs flash at 2Hz before the Asteroids fall.
+    - If there are more Asteroids on the left side of the screen, only the Left LED flashes.
+    - If there are more Asteroids on the right side of the screen, only the Right LED flashes.
+    - The side the Asteroid is determined to be on is based on the middle of the Asteroid.
+- Game over: when the players lives reach 0, the following happens:
+    - The current status is sent to the computer along with a "game over" message.
+    - The back-light fades off using PWM.
+    - The words game over are displayed on screen and both LEDs turn on for a duration of 2 seconds.
+    - The back-light fades back on using PWM, the LEDs turn off, and options to quit or restart are given.
+- Restart game: if restart is chosen, the game returns to it's Game start state.
+- Quit game: if quit is chosen, the Teensy screen goes into inverse mode and displays student number only.
+- Speed of the game: The Right Potentiometer or 'm' is used to set the speed of the game. The speed ranges from 0 (no movement) to a suitable speed that is still playable. Where the 'm' command is used to override the numeric value of the potentiometer, and you have not formulated another strategy to deal with the inherent conflict with the potentiometer, then a numeric value between 0 and 1023 inclusive will be parsed, and the value supplied overrides that of the potentiometer for 1 second.
+- Direct screen write: additional marks will be awarded for drawing and updating the Starfighter using direct screen write. If direct screen write is used, only the minimum screen area necessary should be updated via this method with the rest of the screen being updated normally via the cab202_teensy screen buffer.
+- Game cheats: Allow the player to enter commands into the computer console to change the state of the Teensy Asteroid Apocalypse game.
+    - 'l' - set the lives
+    - 'g' - set the score
+    - '?' - print controls to computer screen (Putty)
+    - 'h' - move spaceship to coordinate within the bottom 8 rows
+    - 'j' - place asteroid at coordinate
+    - 'k' - place boulder at coordinate
+    - 'i' - place fragment at coordinate
